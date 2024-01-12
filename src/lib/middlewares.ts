@@ -18,12 +18,12 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       req: NextApiRequest,
       res: NextApiResponse
    ): Promise<Function> {
-      const requestMethod = req.method.toLowerCase();
+      const requestMethod = req.method!.toLowerCase();
       const isMethodAllowed = verbsObj[requestMethod];
 
       if (!isMethodAllowed) {
          res.status(405).send("Method not allowed");
-         return;
+         
       }
 
       const callback: Function = verbsObj[requestMethod].callback;
@@ -52,15 +52,18 @@ export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
    if (!email) res.status(401).send("Email missing");
 
    try {
-      const tokenData = verifyToken(token);
+      if(token){
 
-      const user = new User(tokenData["userId"]);
-      await user.syncWithDataBase();
-
-      req.body.userData = user.data;
-
-      return { req, res };
-   } catch (error) {
+         const tokenData = verifyToken(token);
+         
+         const user = new User(tokenData["userId"]);
+         await user.syncWithDataBase();
+         
+         req.body.userData = user.data;
+         
+         return { req, res };
+      }
+      } catch (error) {
       console.error(error);
       res.status(401).send(`Wrong token. ${error}`);
    }

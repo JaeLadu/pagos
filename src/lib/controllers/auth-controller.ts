@@ -46,21 +46,21 @@ export async function checkCodeAndEmail(data: { email: string; code: number }) {
       let codesMatch = false;
       let expired = true;
 
-      if (auth && auth.getData().code) {
-         expired = new Date() > auth.getData().expires;
-         codesMatch = auth.getData().code == data.code;
-         userId = auth.getData().userId;
-      }
       if (!codesMatch) {
          throw new Error("Los códigos no coinciden");
       }
       if (expired) {
          throw new Error(`Código vencido`);
       }
+      if (auth && auth.getData().code) {
+         expired = new Date() > auth.getData().expires;
+         codesMatch = auth.getData().code == data.code;
+         userId = auth.getData().userId;
 
-      const token = createToken({ email: data.email, userId });
+         const token = createToken({ email: data.email, userId });
 
-      return { token };
+         return { token };
+      }
    } catch (error) {
       console.error(error);
       throw new Error(`Algo salió mail en checkCodeAndEmail. ${error}`);
