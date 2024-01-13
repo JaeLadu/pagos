@@ -12,7 +12,7 @@ export default function Front() {
 
    async function handleSubmit() {
       const response = await fetch(
-         "https://pagos-alpha.vercel.app/api/orders?productId=1234",
+         "http://localhost:3000/api/orders?productId=1234",
          {
             method: "POST",
             headers: {
