@@ -12,7 +12,7 @@ export default function Front() {
 
    async function handleSubmit() {
       const response = await fetch(
-         "http://localhost:3000/api/orders?productId=1234",
+         `${process.env.BACKEND_URL}/api/orders?productId=1234`,
          {
             method: "POST",
             headers: {
