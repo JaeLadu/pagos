@@ -3,10 +3,7 @@ import { createMPPreference } from "src/lib/mercadopago";
 import { checkToken, reqVerbsHandler } from "src/lib/middlewares";
 import { Order } from "src/lib/models/order";
 
-export default async function handler(
-   req: NextApiRequest,
-   res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { productId } = req.query;
    if (typeof productId == "string") {
       const order = await Order.create({ productId });
@@ -19,9 +16,9 @@ export default async function handler(
    }
 }
 
-// export default reqVerbsHandler({
-//    post: {
-//       middleWares: [checkToken],
-//       callback: handler,
-//    },
-// });
+export default reqVerbsHandler({
+   post: {
+      middleWares: [checkToken],
+      callback: handler,
+   },
+});
