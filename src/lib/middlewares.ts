@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./jwt";
 import { User } from "./models/user";
-import cors from "cors";
 
 type verbsObj = {
    get?: {
@@ -23,17 +22,20 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       const isMethodAllowed = verbsObj[requestMethod];
 
       if (!isMethodAllowed) {
-         //eliminar
-         console.log("reqVerbs Error");
-
          res.status(405).send("Method not allowed");
       }
+
+      res.setHeader("Access-Control-Allow-Credentials", "true");
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "GET,POST");
+      res.setHeader(
+         "Access-Control-Allow-Headers",
+         "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+      );
 
       const callback: Function = verbsObj[requestMethod].callback;
       const middleWares: Function[] | Promise<Function>[] =
          verbsObj[requestMethod].middleWares;
-
-      cors();
 
       if (middleWares?.length) {
          await Promise.all(
