@@ -22,6 +22,9 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       const requestMethod = req.method!.toLowerCase();
       const isMethodAllowed = verbsObj[requestMethod];
 
+      console.log(requestMethod);
+      console.log(isMethodAllowed);
+
       if (!isMethodAllowed) {
          res.status(405).send("Method not allowed");
       }
