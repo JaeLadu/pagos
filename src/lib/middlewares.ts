@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./jwt";
 import { User } from "./models/user";
+import cors from "cors";
 
 type verbsObj = {
    get?: {
@@ -22,13 +23,17 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       const isMethodAllowed = verbsObj[requestMethod];
 
       if (!isMethodAllowed) {
+         //eliminar
+         console.log("reqVerbs Error");
+
          res.status(405).send("Method not allowed");
-         
       }
 
       const callback: Function = verbsObj[requestMethod].callback;
       const middleWares: Function[] | Promise<Function>[] =
          verbsObj[requestMethod].middleWares;
+
+      cors();
 
       if (middleWares?.length) {
          await Promise.all(
@@ -52,18 +57,17 @@ export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
    if (!email) res.status(401).send("Email missing");
 
    try {
-      if(token){
-
+      if (token) {
          const tokenData = verifyToken(token);
-         
+
          const user = new User(tokenData["userId"]);
          await user.syncWithDataBase();
-         
+
          req.body.userData = user.data;
-         
+
          return { req, res };
       }
-      } catch (error) {
+   } catch (error) {
       console.error(error);
       res.status(401).send(`Wrong token. ${error}`);
    }
