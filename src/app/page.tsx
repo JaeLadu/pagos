@@ -29,6 +29,14 @@ export default function Front() {
       const url = await response.json();
       setRedurectURL(url);
    }
+   async function handleTest() {
+      const response = await fetch(`https://pagos-alpha.vercel.app/api/test`, {
+         method: "POST",
+      });
+
+      const data = await response.json();
+      console.log(data);
+   }
 
    return (
       <div>
@@ -39,6 +47,14 @@ export default function Front() {
             }}
          >
             <button>Pagar con mercado</button>
+         </form>
+         <form
+            onSubmit={async (e) => {
+               e.preventDefault();
+               await handleTest();
+            }}
+         >
+            <button>Test</button>
          </form>
          {redirectURL && (
             <Link target="blank" href={redirectURL}>
