@@ -20,10 +20,7 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       res: NextApiResponse
    ): Promise<Function> {
       const requestMethod = req.method!.toLowerCase();
-      const isMethodAllowed = verbsObj[requestMethod];
-
-      console.log(requestMethod);
-      console.log(isMethodAllowed);
+      const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
 
       if (!isMethodAllowed) {
          res.status(405).send("Method not allowed");
@@ -37,8 +34,11 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
          await Promise.all(
             middleWares.map(async (middleWare) => {
                const response = await middleWare(req, res);
-               req = response.req;
-               res = response.res;
+
+               if (response) {
+                  req = response.req;
+                  res = response.res;
+               }
             })
          );
       }
@@ -48,13 +48,26 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
 
 export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
    const token = req.headers.authorization?.split(" ")[1];
-   req.body = JSON.parse(req.body);
    const { email } = req.body;
-
-   if (!token) res.status(401).send("Token missing");
-   if (!email) res.status(401).send("Email missing");
-
    try {
+      if (!token) {
+         throw Error(
+            JSON.stringify({
+               message: "Token missing",
+               status: 401,
+            })
+         );
+      }
+
+      if (!email) {
+         throw Error(
+            JSON.stringify({
+               message: "Email missing",
+               status: 401,
+            })
+         );
+      }
+
       if (token) {
          const tokenData = verifyToken(token);
 

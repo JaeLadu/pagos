@@ -24,7 +24,7 @@ export async function createMPPreference(data: {
       body: {
          external_reference: data.orderId,
          items: data.productos,
-         notification_url: process.env.MP_RESPONSE_HOOK,
+         notification_url: process.env.NEXT_PUBLIC_MP_RESPONSE_HOOK,
       },
    });
 
