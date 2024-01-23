@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./jwt";
 import { User } from "./models/user";
-import cors from "cors";
 
 type verbsObj = {
    get?: {
@@ -29,6 +28,11 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       const callback: Function = verbsObj[requestMethod].callback;
       const middleWares: Function[] | Promise<Function>[] =
          verbsObj[requestMethod].middleWares;
+
+      const corsResponse = cors(req, res);
+
+      req = corsResponse.req;
+      res = corsResponse.res;
 
       if (middleWares?.length) {
          await Promise.all(
@@ -82,4 +86,24 @@ export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
       console.error(error);
       res.status(401).send(`Wrong token. ${error}`);
    }
+}
+
+function cors(
+   req: NextApiRequest,
+   res: NextApiResponse
+): { req: NextApiRequest; res: NextApiResponse } {
+   res.setHeader("Access-Control-Allow-Credentials", "true");
+   res.setHeader("Access-Control-Allow-Origin", "*");
+   res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET,OPTIONS,PATCH,DELETE,POST,PUT"
+   );
+   res.setHeader(
+      "Access-Control-Allow-Headers",
+      "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+   );
+   if (req.method === "OPTIONS") {
+      res.status(200).end();
+   }
+   return { req, res };
 }
