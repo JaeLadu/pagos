@@ -26,11 +26,11 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       });
 
       const requestMethod = req.method!.toLowerCase();
-      const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
+      // const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
 
-      if (!isMethodAllowed) {
-         res.status(405).send("Method not allowed");
-      }
+      // if (!isMethodAllowed) {
+      //    res.status(405).send("Method not allowed");
+      // }
 
       const callback: Function = verbsObj[requestMethod].callback;
       const middleWares: Function[] | Promise<Function>[] =
