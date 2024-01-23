@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./jwt";
 import { User } from "./models/user";
-import cors from "cors";
+import NextCors from "nextjs-cors";
 
 type verbsObj = {
    get?: {
@@ -19,7 +19,11 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       req: NextApiRequest,
       res: NextApiResponse
    ): Promise<Function> {
-      const corsFN = cors();
+      await NextCors(req, res, {
+         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+         origin: "*",
+         optionsSuccessStatus: 200,
+      });
 
       const requestMethod = req.method!.toLowerCase();
       const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
@@ -44,7 +48,7 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
             })
          );
       }
-      return () => corsFN(req, res, callback(req, res));
+      return callback(req, res);
    };
 }
 
