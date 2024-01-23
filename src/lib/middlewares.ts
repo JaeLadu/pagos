@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./jwt";
 import { User } from "./models/user";
+import NextCors from "nextjs-cors";
 
 type verbsObj = {
    get?: {
@@ -20,6 +21,12 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
    ): Promise<Function> {
       const requestMethod = req.method!.toLowerCase();
       const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
+
+      await NextCors(req, res, {
+         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
+         origin: "*",
+         optionsSuccessStatus: 200,
+      });
 
       if (!isMethodAllowed) {
          res.status(405).send("Method not allowed");
