@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { verifyToken } from "./jwt";
 import { User } from "./models/user";
-import NextCors from "nextjs-cors";
 
 type verbsObj = {
    get?: {
@@ -19,18 +18,12 @@ export function reqVerbsHandler(verbsObj: verbsObj) {
       req: NextApiRequest,
       res: NextApiResponse
    ): Promise<Function> {
-      await NextCors(req, res, {
-         methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE"],
-         origin: "*",
-         optionsSuccessStatus: 200,
-      });
-
       const requestMethod = req.method!.toLowerCase();
-      // const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
+      const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
 
-      // if (!isMethodAllowed) {
-      //    res.status(405).send("Method not allowed");
-      // }
+      if (!isMethodAllowed) {
+         res.status(405).send("Method not allowed");
+      }
 
       const callback: Function = verbsObj[requestMethod].callback;
       const middleWares: Function[] | Promise<Function>[] =
