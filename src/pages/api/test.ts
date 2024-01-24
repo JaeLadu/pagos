@@ -1,6 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { checkToken, reqVerbsHandler } from "src/lib/middlewares";
 
-export default function handler(res: NextApiResponse) {
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+   console.log(req.body);
+
    res.status(200).send("test");
 }
