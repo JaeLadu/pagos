@@ -5,9 +5,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { userData } = req.body;
    res.json(userData);
 }
-export default reqVerbsHandler({
-   get: {
-      middleWares: [checkToken],
-      callback: handler,
-   },
-});
+export default (req, res) =>
+   reqVerbsHandler(req, res, {
+      get: {
+         middleWares: [checkToken],
+         callback: handler,
+      },
+   });

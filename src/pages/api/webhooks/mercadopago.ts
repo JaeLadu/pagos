@@ -17,8 +17,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       console.log(data);
    }
 }
-export default reqVerbsHandler({
-   post: {
-      callback: handler,
-   },
-});
+export default (req, res) =>
+   reqVerbsHandler(req, res, {
+      post: {
+         callback: handler,
+      },
+   });
