@@ -16,9 +16,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
    }
 }
 
-export default reqVerbsHandler({
-   post: {
-      middleWares: [checkToken],
-      callback: handler,
-   },
-});
+export default (req, res) =>
+   reqVerbsHandler(req, res, {
+      post: {
+         middleWares: [checkToken],
+         callback: handler,
+      },
+   });

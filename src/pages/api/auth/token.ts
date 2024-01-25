@@ -10,13 +10,14 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       res.json(token);
    } catch (error) {
       console.error(JSON.stringify(error));
-      res.status(401).send(`Somethig went wrong. ${error}`);
+      res.status(401).end(error.message);
    }
 }
 
-export default reqVerbsHandler({
-   post: {
-      callback: (req: NextApiRequest, res: NextApiResponse) =>
-         handler(req, res),
-   },
-});
+export default (req, res) =>
+   reqVerbsHandler(req, res, {
+      post: {
+         callback: (req: NextApiRequest, res: NextApiResponse) =>
+            handler(req, res),
+      },
+   });
