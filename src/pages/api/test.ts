@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { checkToken, reqVerbsHandler } from "src/lib/middlewares";
+import { checkToken, filter, reqVerbsHandler } from "src/lib/middlewares";
 
 const middlewares = [
    (req, res) => {
@@ -15,7 +15,14 @@ const middlewares = [
       return { req, res };
    },
 ];
-function handler(req, res) {
+const mockObj = {
+   post: {
+      callback: returnFun,
+      middleWares: middlewares,
+   },
+};
+
+function returnFun(req, res) {
    const { query, body } = req;
    return res
       .status(200)
@@ -26,10 +33,8 @@ function handler(req, res) {
       );
 }
 
-export default (req, res) =>
-   reqVerbsHandler(req, res, {
-      post: {
-         callback: handler,
-         middleWares: middlewares,
-      },
-   });
+function mockFun(req, res) {
+   res.status(200).end("Mock");
+}
+
+export default (req, res) => filter(req, res, mockObj);

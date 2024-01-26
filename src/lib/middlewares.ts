@@ -13,13 +13,13 @@ type verbsObj = {
    };
 };
 
-export function reqVerbsHandler(
+export async function reqVerbsHandler(
    req: NextApiRequest,
    res: NextApiResponse,
    verbsObj: verbsObj
 ) {
    const requestMethod = req.method!.toLowerCase();
-   const isMethodAllowed = verbsObj[requestMethod];
+   const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
 
    if (!isMethodAllowed) {
       res.status(405).end("Method not allowed");
@@ -30,20 +30,29 @@ export function reqVerbsHandler(
    const middleWares: Function[] | Promise<Function>[] =
       verbsObj[requestMethod].middleWares;
 
-   if (middleWares) {
-      middleWares.forEach(async (m) => {
-         try {
-            const response = await m(req, res);
-            req = response.req;
-            res = response.res;
-         } catch (error) {
-            console.log(error.message);
-            return;
-         }
-      });
-   }
+   try {
+      if (middleWares?.length) {
+         await Promise.all(
+            middleWares.map(async (middleWare) => {
+               const response = await middleWare(req, res);
 
-   callback(req, res);
+               if (!response.req) {
+                  throw Error(response.message);
+               }
+
+               req = response.req;
+               res = response.res;
+            })
+         );
+      }
+      callback(req, res);
+   } catch (error) {
+      console.log(error.message);
+
+      const errorObj = JSON.parse(error.message);
+      res.status(errorObj.status).end(errorObj.error);
+      return;
+   }
 }
 
 export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
@@ -82,4 +91,33 @@ export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
       console.error(error);
       return error;
    }
+}
+
+export function filter(req, res, verbsObj) {
+   const requestMethod = req.method!.toLowerCase();
+   const isMethodAllowed = verbsObj[requestMethod];
+
+   if (!isMethodAllowed) {
+      res.status(405).end("Method not allowed");
+      return;
+   }
+
+   const callback: Function = verbsObj[requestMethod].callback;
+   const middleWares: Function[] | Promise<Function>[] =
+      verbsObj[requestMethod].middleWares;
+
+   if (middleWares) {
+      middleWares.forEach(async (m) => {
+         try {
+            const response = await m(req, res);
+            req = response.req;
+            res = response.res;
+         } catch (error) {
+            console.log(error.message);
+            return;
+         }
+      });
+   }
+
+   callback(req, res);
 }
