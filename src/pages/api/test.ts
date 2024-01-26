@@ -15,14 +15,7 @@ const middlewares = [
       return { req, res };
    },
 ];
-const mockObj = {
-   post: {
-      callback: returnFun,
-      middleWares: middlewares,
-   },
-};
-
-function returnFun(req, res) {
+function handler(req, res) {
    const { query, body } = req;
    return res
       .status(200)
@@ -33,36 +26,10 @@ function returnFun(req, res) {
       );
 }
 
-function mockFun(req, res) {
-   res.status(200).end("Mock");
-}
-function filter(req, res, verbsObj) {
-   const requestMethod = req.method!.toLowerCase();
-   const isMethodAllowed = verbsObj[requestMethod];
-
-   if (!isMethodAllowed) {
-      res.status(405).end("Method not allowed");
-      return;
-   }
-
-   const callback: Function = verbsObj[requestMethod].callback;
-   const middleWares: Function[] | Promise<Function>[] =
-      verbsObj[requestMethod].middleWares;
-
-   if (middleWares) {
-      middleWares.forEach(async (m) => {
-         try {
-            const response = await m(req, res);
-            req = response.req;
-            res = response.res;
-         } catch (error) {
-            console.log(error.message);
-            return;
-         }
-      });
-   }
-
-   callback(req, res);
-}
-
-export default (req, res) => filter(req, res, mockObj);
+export default (req, res) =>
+   reqVerbsHandler(req, res, {
+      post: {
+         callback: handler,
+         middleWares: middlewares,
+      },
+   });

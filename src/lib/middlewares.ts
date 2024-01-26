@@ -13,13 +13,13 @@ type verbsObj = {
    };
 };
 
-export async function reqVerbsHandler(
+export function reqVerbsHandler(
    req: NextApiRequest,
    res: NextApiResponse,
    verbsObj: verbsObj
 ) {
    const requestMethod = req.method!.toLowerCase();
-   const isMethodAllowed = Object.hasOwn(verbsObj, requestMethod);
+   const isMethodAllowed = verbsObj[requestMethod];
 
    if (!isMethodAllowed) {
       res.status(405).end("Method not allowed");
@@ -30,29 +30,20 @@ export async function reqVerbsHandler(
    const middleWares: Function[] | Promise<Function>[] =
       verbsObj[requestMethod].middleWares;
 
-   try {
-      if (middleWares?.length) {
-         await Promise.all(
-            middleWares.map(async (middleWare) => {
-               const response = await middleWare(req, res);
-
-               if (!response.req) {
-                  throw Error(response.message);
-               }
-
-               req = response.req;
-               res = response.res;
-            })
-         );
-      }
-      callback(req, res);
-   } catch (error) {
-      console.log(error.message);
-
-      const errorObj = JSON.parse(error.message);
-      res.status(errorObj.status).end(errorObj.error);
-      return;
+   if (middleWares) {
+      middleWares.forEach(async (m) => {
+         try {
+            const response = await m(req, res);
+            req = response.req;
+            res = response.res;
+         } catch (error) {
+            console.log(error.message);
+            return;
+         }
+      });
    }
+
+   callback(req, res);
 }
 
 export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
