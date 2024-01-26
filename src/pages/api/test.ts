@@ -1,22 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { checkToken, reqVerbsHandler } from "src/lib/middlewares";
 
-const mockObj = {
-   post: {
-      callback: filter,
-   },
-};
+// const mockObj = {
+//    post: {
+//       callback: mockFun,
+//    },
+// };
 
-function filter(req, res) {
+function returnFun(req, res) {
    const { query, body } = req;
-
-   const requestMethod = req.method!.toLowerCase();
-   const isMethodAllowed = mockObj[requestMethod];
-
-   if (!isMethodAllowed) {
-      res.status(405).end("Method not allowed");
-      return;
-   }
    return res
       .status(200)
       .send(
@@ -26,6 +18,27 @@ function filter(req, res) {
       );
 }
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-   return filter(req, res);
+function mockFun(req, res) {
+   res.status(200).end("Mock");
 }
+// function filter(verbsObj, req, res) {
+//    const requestMethod = req.method!.toLowerCase();
+//    const isMethodAllowed = mockObj[requestMethod];
+
+//    if (!isMethodAllowed) {
+//       res.status(405).end("Method not allowed");
+//       return;
+//    }
+
+//    const callback: Function = verbsObj[requestMethod].callback;
+
+//    callback(req, res);
+// }
+
+export default (req, res) =>
+   reqVerbsHandler(req, res, {
+      post: {
+         callback: returnFun,
+         middleWares: [checkToken],
+      },
+   });

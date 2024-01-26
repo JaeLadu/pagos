@@ -45,7 +45,7 @@ export async function reqVerbsHandler(
             })
          );
       }
-      return callback(req, res);
+      callback(req, res);
    } catch (error) {
       console.log(error.message);
 
