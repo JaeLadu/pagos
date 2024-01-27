@@ -57,7 +57,8 @@ export async function reqVerbsHandler(
 
 export async function checkToken(req: NextApiRequest, res: NextApiResponse) {
    const token = req.headers.authorization?.split(" ")[1];
-   const { email } = JSON.parse(req.body);
+   req.body = JSON.parse(req.body);
+   const { email } = req.body;
    try {
       if (!token) {
          throw Error(
