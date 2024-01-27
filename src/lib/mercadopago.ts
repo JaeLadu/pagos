@@ -28,5 +28,7 @@ export async function createMPPreference(data: {
       },
    });
 
+   console.log(response);
+
    return response.init_point;
 }

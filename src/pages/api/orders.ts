@@ -5,11 +5,12 @@ import { Order } from "src/lib/models/order";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { productId } = req.query;
+
    if (typeof productId == "string") {
       const order = await Order.create({ productId });
       const redirectURL = await createMPPreference({
          orderId: order.id,
-         productos: [{ ...JSON.parse(req.body), id: productId }],
+         productos: [{ ...req.body, id: productId }],
       });
 
       res.json(redirectURL);

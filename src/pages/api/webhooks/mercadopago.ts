@@ -5,7 +5,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { id, topic } = req.query;
    if (topic == "merchant_order") {
       const response = await fetch(
-         `https://api.mercadopago.com/checkout/preferences/${id}`,
+         `https://api.mercadolibre.com/merchant_orders/${id}`,
          {
             headers: {
                "Content-Type": "application/json",
