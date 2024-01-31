@@ -1,4 +1,5 @@
 import MercadoPagoConfig, { Preference } from "mercadopago";
+import { Product } from "./models/product";
 
 const client = new MercadoPagoConfig({
    accessToken: process.env.MP_TEST_ACCESS_TOKEN!,
@@ -7,18 +8,9 @@ const client = new MercadoPagoConfig({
 
 const preferencia = new Preference(client);
 
-type product = {
-   id: string;
-   title: string;
-   quantity: number;
-   unit_price: number;
-   description?: string;
-   picture_url?: string;
-};
-
 export async function createMPPreference(data: {
    orderId: string;
-   productos: product[];
+   productos: Product[];
 }) {
    const response = await preferencia.create({
       body: {
@@ -27,8 +19,6 @@ export async function createMPPreference(data: {
          notification_url: process.env.NEXT_PUBLIC_MP_RESPONSE_HOOK,
       },
    });
-
-   console.log(response);
 
    return response.init_point;
 }

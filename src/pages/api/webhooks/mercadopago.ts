@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { reqVerbsHandler } from "src/lib/middlewares";
+import { Order } from "src/lib/models/order";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
+   res.status(200).end();
    const { id, topic } = req.query;
    if (topic == "merchant_order") {
       const response = await fetch(
@@ -14,7 +16,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
          }
       );
       const data = await response.json();
-      console.log(data);
+      const { external_reference, order_status } = data;
+      const order = new Order(external_reference);
+      await order.syncLocal();
+      order.setData({ status: order_status });
+      await order.syncDataBase();
    }
 }
 export default (req, res) =>

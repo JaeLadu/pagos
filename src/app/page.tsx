@@ -3,26 +3,29 @@ import Link from "next/link";
 import React, { useState } from "react";
 
 export default function Front() {
-   const mockReqData = {
-      title: "Mock product",
-      quantity: 2,
-      unit_price: 1250,
-   };
    const [redirectURL, setRedurectURL] = useState("");
    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
    async function handleSubmit() {
-      const response = await fetch(`${backendUrl}/api/orders?productId=1234`, {
-         method: "POST",
-         headers: {
-            Authorization:
-               "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphZWxhZHUxQGdtYWlsLmNvbSIsInVzZXJJZCI6IkpMbEZ1UzVuYnVZZDJ0NXFHR3BnIiwiaWF0IjoxNzA0OTI2OTkyfQ._k7_ciEXX_e9haQ89kOTe2d6eAr4qNFYqI-J8J6Fi-o",
-         },
-         body: JSON.stringify({
-            ...mockReqData,
-            email: "jaeladu1@gmail.com",
-         }),
-      });
+      const response = await fetch(
+         `${backendUrl}/api/orders?productIds=[123, 234]`,
+         {
+            method: "POST",
+            headers: {
+               Authorization:
+                  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphZWxhZHUxQGdtYWlsLmNvbSIsInVzZXJJZCI6IkpMbEZ1UzVuYnVZZDJ0NXFHR3BnIiwiaWF0IjoxNzA0OTI2OTkyfQ._k7_ciEXX_e9haQ89kOTe2d6eAr4qNFYqI-J8J6Fi-o",
+            },
+            body: JSON.stringify({
+               email: "jaeladu1@gmail.com",
+               123: {
+                  quantity: 1,
+               },
+               234: {
+                  quantity: 2,
+               },
+            }),
+         }
+      );
 
       const url = await response.json();
       setRedurectURL(url);
