@@ -49,8 +49,10 @@ export class Order {
       this.data = { ...this.data, ...newData };
    }
 
-   async syncDataBase() {
-      const response = await orderCollectionRef.doc(this.id).update(this.data);
+   async syncDataBase(data?) {
+      const response = await orderCollectionRef
+         .doc(this.id)
+         .update(data || this.data);
       return response;
    }
 

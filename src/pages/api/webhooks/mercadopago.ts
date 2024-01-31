@@ -17,9 +17,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const data = await response.json();
       const { external_reference, order_status } = data;
       const order = new Order(external_reference);
-      await order.syncLocal();
-      order.setData({ status: order_status });
-      await order.syncDataBase();
+      await order.syncDataBase({ status: order_status });
       res.status(200).end();
    }
 }
