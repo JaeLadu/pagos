@@ -3,7 +3,6 @@ import { reqVerbsHandler } from "src/lib/middlewares";
 import { Order } from "src/lib/models/order";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-   res.status(200).end();
    const { id, topic } = req.query;
    if (topic == "merchant_order") {
       const response = await fetch(
@@ -21,6 +20,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       await order.syncLocal();
       order.setData({ status: order_status });
       await order.syncDataBase();
+      res.status(200).end();
    }
 }
 export default (req, res) =>
