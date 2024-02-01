@@ -1,9 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { syncPreference } from "src/lib/mercadopago";
 import { reqVerbsHandler } from "src/lib/middlewares";
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
-   syncPreference(req, res);
+   fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/mercadopago/database-update`, {
+      method: "POST",
+      body: req.body,
+   });
    res.status(200).end();
 }
 export default (req, res) =>
