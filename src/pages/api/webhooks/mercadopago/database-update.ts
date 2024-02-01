@@ -18,7 +18,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
    } else {
       throw new Error("Falló database-update");
    }
-   res.status(200).end("Ok");
+   return res.status(200).end("Ok");
 }
 
 export default (req: NextApiRequest, res: NextApiResponse) =>
