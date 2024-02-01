@@ -6,7 +6,7 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/webhooks/mercadopago/database-update`,
       {
          method: "POST",
-         body: req.body,
+         body: JSON.stringify(req.body),
       }
    );
    res.status(200).end();
