@@ -1,4 +1,8 @@
-import { getMerchantOrder } from "../mercadopago";
+import {
+   getMerchantOrder,
+   getPayment,
+   searchMerchantOrder,
+} from "../mercadopago";
 import { Order } from "../models/order";
 
 export async function updateBDSatus(id: string) {
@@ -12,4 +16,27 @@ export async function updateBDSatus(id: string) {
 
       throw new Error(error.message);
    }
+}
+
+export async function updateDBOrderStatusFromPayment(id: string) {
+   try {
+      const orders = await pullOrderDataFromPayment(id);
+      if (orders) {
+         const { order_status, external_reference } = orders[0];
+         const order = new Order(external_reference!);
+         return await order.syncDataBase({ status: order_status });
+      }
+   } catch (error) {
+      console.log(error.message);
+      throw new Error(error.message);
+   }
+}
+
+async function pullOrderDataFromPayment(id: string) {
+   const payment = await getPayment({ id });
+   const { external_reference } = payment;
+   const orders = await searchMerchantOrder({
+      external_reference,
+   });
+   return orders.elements;
 }

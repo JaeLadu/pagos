@@ -1,5 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { updateBDSatus } from "src/lib/controllers/order-controller";
+import {
+   updateBDSatus,
+   updateDBOrderStatusFromPayment,
+} from "src/lib/controllers/order-controller";
 import { reqVerbsHandler } from "src/lib/middlewares";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -8,6 +11,9 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
    if (topic == "merchant_order" && id) {
       updateBDSatus(id as string);
+   }
+   if (topic == "payment" && id) {
+      updateDBOrderStatusFromPayment(id as string);
    }
 
    res.status(200).end();
