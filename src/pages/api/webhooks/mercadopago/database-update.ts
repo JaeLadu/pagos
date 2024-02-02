@@ -3,9 +3,9 @@ import { reqVerbsHandler } from "src/lib/middlewares";
 import { Order } from "src/lib/models/order";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-   const { resource } = JSON.parse(req.body);
+   const { resource, topic } = JSON.parse(req.body);
    try {
-      if (resource == "merchant_order") {
+      if (resource && topic == "merchant_order") {
          const response = await fetch(`${resource}`, {
             headers: {
                "Content-Type": "application/json",
@@ -16,7 +16,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
          const { external_reference, order_status } = data;
          const order = new Order(external_reference);
          await order.syncDataBase({ status: order_status });
-      } else if (resource == "payment") {
+      } else if (resource && topic == "payment") {
          const response = await fetch(`${resource}`, {
             headers: {
                "Content-Type": "application/json",
