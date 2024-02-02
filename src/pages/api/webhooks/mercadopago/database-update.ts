@@ -17,7 +17,11 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
          const order = new Order(external_reference);
          await order.syncDataBase({ status: order_status });
       } else {
-         throw new Error("Falló database-update");
+         throw new Error(
+            `Falló database-update. En el body llegó: ${JSON.stringify(
+               req.body
+            )}`
+         );
       }
       return res.status(200).end("Ok");
    } catch (error) {
