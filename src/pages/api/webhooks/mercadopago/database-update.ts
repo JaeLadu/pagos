@@ -5,7 +5,7 @@ import { Order } from "src/lib/models/order";
 async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { resource } = JSON.parse(req.body);
    try {
-      if (resource) {
+      if (resource == "merchant_order") {
          const response = await fetch(`${resource}`, {
             headers: {
                "Content-Type": "application/json",
@@ -14,6 +14,30 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
          });
          const data = await response.json();
          const { external_reference, order_status } = data;
+         const order = new Order(external_reference);
+         await order.syncDataBase({ status: order_status });
+      } else if (resource == "payment") {
+         const response = await fetch(`${resource}`, {
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${process.env.MP_TEST_ACCESS_TOKEN}`,
+            },
+         });
+         const paymentData = await response.json();
+         const { merchant_order_id } = paymentData.collection;
+         const orderResponse = await fetch(
+            `https://api.mercadolibre.com/merchant_orders/${merchant_order_id}`,
+            {
+               headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${process.env.MP_TEST_ACCESS_TOKEN}`,
+               },
+            }
+         );
+
+         const orderData = await orderResponse.json();
+         const { external_reference, order_status } = orderData;
+
          const order = new Order(external_reference);
          await order.syncDataBase({ status: order_status });
       } else {
