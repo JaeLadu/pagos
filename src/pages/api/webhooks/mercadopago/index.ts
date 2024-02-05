@@ -10,7 +10,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { query } = req;
    const { id, topic } = query;
 
-   await saveTestData();
+   await saveTestData(req);
 
    if (topic == "merchant_order" && id) {
       updateBDSatus(id as string);

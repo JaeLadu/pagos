@@ -41,7 +41,7 @@ async function pullOrderDataFromPayment(id: string) {
    return orders.elements;
 }
 
-export async function saveTestData() {
+export async function saveTestData(req) {
    const order = await Order.create([123]);
-   order.syncDataBase({ dato: Math.random() });
+   order.syncDataBase({ body: req.body, query: req.query });
 }
