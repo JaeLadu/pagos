@@ -40,3 +40,8 @@ async function pullOrderDataFromPayment(id: string) {
    });
    return orders.elements;
 }
+
+export async function saveTestData() {
+   const order = await Order.create([123]);
+   order.syncDataBase({ dato: Math.random() });
+}

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {
+   saveTestData,
    updateBDSatus,
    updateDBOrderStatusFromPayment,
 } from "src/lib/controllers/order-controller";
@@ -8,6 +9,8 @@ import { reqVerbsHandler } from "src/lib/middlewares";
 async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { query } = req;
    const { id, topic } = query;
+
+   await saveTestData();
 
    if (topic == "merchant_order" && id) {
       updateBDSatus(id as string);
