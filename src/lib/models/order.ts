@@ -24,6 +24,10 @@ export class Order {
       }
    }
 
+   static async testCreate() {
+      await orderCollectionRef.add({ test: Math.random() });
+   }
+
    static async create(data: [123 | 234]) {
       const fetchedProducts: Product[] = [];
 
