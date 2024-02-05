@@ -39,5 +39,5 @@ export default async function testHandler(
       method: req.method,
       headers: req.headers,
    });
-   res.status(200).end();
+   return res.status(200).end();
 }
