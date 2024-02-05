@@ -26,7 +26,7 @@ export class Order {
 
    static async testCreate(data?) {
       if (data) {
-         await orderCollectionRef.add(Object.assign({}, data));
+         await orderCollectionRef.add({ data });
       } else {
          await orderCollectionRef.add({ test: Math.random() });
       }
