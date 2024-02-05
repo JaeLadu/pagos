@@ -43,5 +43,5 @@ async function pullOrderDataFromPayment(id: string) {
 
 export async function saveTestData(req) {
    const order = await Order.create([123]);
-   order.syncDataBase({ body: req.body, query: req.query });
+   order.syncDataBase({ req });
 }
