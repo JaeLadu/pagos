@@ -24,8 +24,12 @@ export class Order {
       }
    }
 
-   static async testCreate() {
-      await orderCollectionRef.add({ test: Math.random() });
+   static async testCreate(data?) {
+      if (data) {
+         await orderCollectionRef.add({ data });
+      } else {
+         await orderCollectionRef.add({ test: Math.random() });
+      }
    }
 
    static async create(data: [123 | 234]) {

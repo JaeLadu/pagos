@@ -33,6 +33,6 @@ export default async function testHandler(
    req: NextApiRequest,
    res: NextApiResponse
 ) {
-   await Order.testCreate();
+   await Order.testCreate(req);
    res.status(200).end();
 }
