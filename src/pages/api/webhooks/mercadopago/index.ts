@@ -5,6 +5,7 @@ import {
    updateDBOrderStatusFromPayment,
 } from "src/lib/controllers/order-controller";
 import { reqVerbsHandler } from "src/lib/middlewares";
+import { Order } from "src/lib/models/order";
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { query } = req;
@@ -21,9 +22,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
    res.status(200).end();
 }
-export default (req, res) =>
-   reqVerbsHandler(req, res, {
-      post: {
-         callback: handler,
-      },
-   });
+// export default (req, res) =>
+//    reqVerbsHandler(req, res, {
+//       post: {
+//          callback: handler,
+//       },
+//    });
+
+export default async function testHandler(
+   req: NextApiRequest,
+   res: NextApiResponse
+) {
+   const order = await Order.create([123]);
+   res.status(200).end();
+}
