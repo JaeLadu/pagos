@@ -20,7 +20,6 @@
       "yarn": "^1.22.21"
    },
    "devDependencies": {
-      "@types/react": "18.2.45",
-      "@webhooksite/cli": "^0.1.7"
+      "@types/react": "18.2.45"
    }
 }

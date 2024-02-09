@@ -4,10 +4,7 @@ import MercadoPagoConfig, {
    Payment,
 } from "mercadopago";
 import { Product } from "./models/product";
-import { Order } from "./models/order";
-import { NextApiRequest, NextApiResponse } from "next";
 import { MerchantOrderGetData } from "mercadopago/dist/clients/merchantOrder/get/types";
-import { MerchantOrderSearchData } from "mercadopago/dist/clients/merchantOrder/search/types";
 import { PaymentGetData } from "mercadopago/dist/clients/payment/get/types";
 
 const client = new MercadoPagoConfig({
@@ -31,7 +28,7 @@ export async function createMPPreference(data: {
       },
    });
 
-   return response.init_point;
+   return response.sandbox_init_point;
 }
 
 export async function getMerchantOrder(id: MerchantOrderGetData) {
